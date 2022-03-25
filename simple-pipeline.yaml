@@ -1,0 +1,15 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: cluster-scoped-demo
+spec:
+  pipelineRef:
+    resolver: clusterscoped
+    resource:
+    - name: kind
+      value: pipeline
+    - name: name
+      value: simple-pipeline
+  params:
+  - name: name
+    value: cluster-scoped

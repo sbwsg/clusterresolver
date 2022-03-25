@@ -1,0 +1,68 @@
+# Copyright 2022 The Tekton Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+# This binds the same role to the clusterresolver that normal resolvers
+# get: permission to read and load config and secret data and perform
+# leader election.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-resolution-namespace-rbac-clusterresolver
+  namespace: tekton-remote-resolution
+  labels:
+    resolution.tekton.dev/release: devel
+subjects:
+  - kind: ServiceAccount
+    name: clusterresolver
+    namespace: tekton-remote-resolution
+roleRef:
+  kind: Role
+  name: tekton-resolution-namespace-rbac
+  apiGroup: rbac.authorization.k8s.io
+---
+# This binds the same clusterrole to the clusterresolver that normal
+# resolvers get: the permission to read and write to ResolutionRequests
+# across the entire cluster.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: tekton-resolution-clusterresolver
+  labels:
+    resolution.tekton.dev/release: devel
+subjects:
+  - kind: ServiceAccount
+    name: clusterresolver
+    namespace: tekton-remote-resolution
+roleRef:
+  kind: ClusterRole
+  name: tekton-resolution-resolution-request-updates
+  apiGroup: rbac.authorization.k8s.io
+---
+# Allow clusterresolver to read Tasks and Pipelines from the
+# tekton-cluster-scoped-resources namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: tekton-resolution-namespace-rbac-clusterresolver-private-namespace-access
+  namespace: tekton-cluster-scoped-resources
+  labels:
+    resolution.tekton.dev/release: devel
+subjects:
+  - kind: ServiceAccount
+    name: clusterresolver
+    namespace: tekton-remote-resolution
+roleRef:
+  kind: Role
+  name: tekton-resolution-cluster-scoped-resources
+  apiGroup: rbac.authorization.k8s.io
