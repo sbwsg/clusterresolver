@@ -3,7 +3,14 @@
 This Resolver implements ClusterTask and ClusterPipeline support for
 Tekton Pipelines.
 
-How it works:
+## Parameters
+
+| Param Name | Description                                                       |
+|------------|-------------------------------------------------------------------|
+| `kind`     | Either `task` or `pipeline`                                       |
+| `name`     | The name of the cluster-scoped Task or Pipeline. e.g. `git-clone` |
+
+## How it works:
 - a single namespace is created and populated with Tasks and Pipelines.
   This is where "cluster-scoped" Tasks and Pipelines should be put by
   the operator/admin.
@@ -68,13 +75,6 @@ The git-clone Task is now "cluster-scoped"; effectively working as a
 ## What's Supported?
 
 - Fetching `Tasks` and `Pipelines` cluster-wide.
-
-## Parameters
-
-| Param Name | Description                                                       |
-|------------|-------------------------------------------------------------------|
-| `kind`     | Either `task` or `pipeline`                                       |
-| `name`     | The name of the cluster-scoped Task or Pipeline. e.g. `git-clone` |
 
 ---
 
